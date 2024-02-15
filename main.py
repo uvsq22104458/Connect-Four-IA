@@ -20,32 +20,30 @@ def grid_create():
 def rules(grid, user, user_toggle):
     # rules for user_1 using 0 as pions
     if user_toggle == True:
-        for user in grid[user]:
-            for i in grid[user]:
-                # rules for adding a pion
-                if grid[user][-i:] == '.':
-                    grid[user][-i:] = 0
-                    break
-                # rules if the colunm is full
-                elif grid[user][0] != '.':
-                    print(
-                        'La colonne est complète, veuillez réessayer.')
-                    user_toggle = True
-                    input(grid, user_toggle)
+        for i in grid[user]:
+            # rules for adding a pion
+            if grid[user][-i:] == '.':
+                grid[user][-i:] = 0
+                break
+            # rules if the colunm is full
+            elif grid[user][0] != '.':
+                print(
+                    'La colonne est complète, veuillez réessayer.')
+                user_toggle = True
+                input_user(grid, user_toggle)
     # rules for user_2 using 1 as pions
     if user == False:
-        for user in grid[user]:
-            for i in grid[user]:
-                # rules for adding a pion
-                if grid[user][-i:] == '.':
-                    grid[user][-i:] = 1
-                    break
-                # rules if the colunm is full
-                elif grid[user][0] != '.':
-                    print(
-                        'La colonne est complète, veuillez réessayer.')
-                    user_toggle = False
-                    input(grid, user_toggle)
+        for i in grid[user]:
+            # rules for adding a pion
+            if grid[user][-i:] == '.':
+                grid[user][-i:] = 1
+                break
+            # rules if the colunm is full
+            elif grid[user][0] != '.':
+                print(
+                    'La colonne est complète, veuillez réessayer.')
+                user_toggle = False
+                input_user(grid, user_toggle)
     # rules for a draw
     compteur = 0
     for i in range(LARGEUR):
@@ -95,27 +93,19 @@ def rules(grid, user, user_toggle):
         compteur = 0
         for i in range(len(grid)):
             for j in range(LARGEUR):
-                if grid[j][i] == 0:
-                    compteur += 1
-                elif compteur == 4:
+                if grid[grid[i][j]:grid[i+3][j+3]] == [0, 0, 0, 0] or grid[grid[i][j]:grid[i+3][j-3]] == [0, 0, 0, 0]:
                     print('Partie Gagnée par user_1')
                     break
-                else:
-                    compteur = 0
     if user_toggle == False:
         compteur = 0
         for i in range(len(grid)):
             for j in range(LARGEUR):
-                if grid[j][i] == 1:
-                    compteur += 1
-                elif compteur == 4:
-                    print('Partie Gagnée par user_2')
+                if grid[grid[i][j]:grid[i+3][j+3]] == [0, 0, 0, 0] or grid[grid[i][j]:grid[i+3][j-3]] == [0, 0, 0, 0]:
+                    print('Partie Gagnée par user_1')
                     break
-                else:
-                    compteur = 0
 
 
-def input(grid, user_toggle):
+def input_user(grid, user_toggle):
     if user_toggle == True:
         user_1 = int(
             input('Entrez le n° de la colonne souhaitée pour jouer : ')) - 1
@@ -141,7 +131,7 @@ def display_grid(grid):
 def main():
     grid = grid_create()
     display_grid(grid)
-    input(grid, user_toggle)
+    input_user(grid, user_toggle)
 
 
 if __name__ == '__main__':
