@@ -33,7 +33,7 @@ def rules(grid, user, user_toggle):
                     user_toggle = True
                     input(grid, user_toggle)
     # rules for user_2 using 1 as pions
-    elif user == False:
+    if user == False:
         for user in grid[user]:
             for i in grid[user]:
                 # rules for adding a pion
@@ -55,6 +55,7 @@ def rules(grid, user, user_toggle):
             if compteur == LARGEUR:
                 print('Le puissance 4 est complet, la partie est nulle.')
                 break
+
     # rules to check if there is a match vertically
     if user_toggle == True:
         for i in range(len(grid)):
@@ -64,22 +65,54 @@ def rules(grid, user, user_toggle):
         for i in range(len(grid)):
             if grid[i].count(0) == 4:
                 print('Partie Gagnée par user_2')
+
     # rules to check if there is a match horizontally
     if user_toggle == True:
         compteur = 0
         for i in range(len(grid)):
-            for j in range(len(grid[i])):
-
-                if compteur == 4:
-                    print('Partie Gagnée par user_2')
+            for j in range(LARGEUR):
+                if grid[j][i] == 0:
+                    compteur += 1
+                elif compteur == 4:
+                    print('Partie Gagnée par user_1')
                     break
+                else:
+                    compteur = 0
     if user_toggle == False:
         compteur = 0
         for i in range(len(grid)):
-            # LOOP
-            if compteur == 4:
-                print('Partie Gagnée par user_2')
-                break
+            for j in range(LARGEUR):
+                if grid[j][i] == 0:
+                    compteur += 1
+                elif compteur == 4:
+                    print('Partie Gagnée par user_2')
+                    break
+                else:
+                    compteur = 0
+
+    # rules to check if there is a match diagonally
+    if user_toggle == True:
+        compteur = 0
+        for i in range(len(grid)):
+            for j in range(LARGEUR):
+                if grid[j][i] == 0:
+                    compteur += 1
+                elif compteur == 4:
+                    print('Partie Gagnée par user_1')
+                    break
+                else:
+                    compteur = 0
+    if user_toggle == False:
+        compteur = 0
+        for i in range(len(grid)):
+            for j in range(LARGEUR):
+                if grid[j][i] == 1:
+                    compteur += 1
+                elif compteur == 4:
+                    print('Partie Gagnée par user_2')
+                    break
+                else:
+                    compteur = 0
 
 
 def input(grid, user_toggle):
