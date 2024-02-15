@@ -68,15 +68,16 @@ def rules(grid, user, user_toggle):
     if user_toggle == True:
         compteur = 0
         for i in range(len(grid)):
-            for j, pion in enumerate(grid[i]):
-                # METTRE LES REGLES. PAS TERMINE.
-                print('Partie Gagnée par user_1')
-                break
+            for j in range(len(grid[i])):
+
+                if compteur == 4:
+                    print('Partie Gagnée par user_2')
+                    break
     if user_toggle == False:
         compteur = 0
         for i in range(len(grid)):
-            for j, pion in enumerate(grid[i]):
-                # METTRE LES REGLES. PAS TERMINE.
+            # LOOP
+            if compteur == 4:
                 print('Partie Gagnée par user_2')
                 break
 
