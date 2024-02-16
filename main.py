@@ -1,3 +1,7 @@
+###############
+# Importation #
+###############
+import sys as s
 ############
 # Constant #
 ############
@@ -49,7 +53,7 @@ def rules(grid, user, user_toggle):
         if compteur_0 == LARGEUR:
             print('Le puissance 4 est complet, la partie est nulle.')
             compteur_0 = 0
-            break
+            exit_program(grid)
     # Check if there is a match vertically.
     for i in range(LARGEUR):
         for j in range(HAUTEUR):
@@ -58,10 +62,9 @@ def rules(grid, user, user_toggle):
             elif grid[i][j] == 1:
                 compteur_1 += 1
             elif compteur_1 == 4 or compteur_0 == 4:
-                print('Partie Terminée')
                 compteur_1 = 0
                 compteur_0 = 0
-                break
+                exit_program(grid)
             else:
                 compteur_1 = 0
                 compteur_0 = 0
@@ -73,10 +76,9 @@ def rules(grid, user, user_toggle):
             elif grid[j][i] == 1:
                 compteur_1 += 1
             elif compteur_1 == 4 or compteur_0 == 4:
-                print('Partie Terminée')
                 compteur_1 = 0
                 compteur_0 = 0
-                break
+                exit_program(grid)
             else:
                 compteur_1 = 0
                 compteur_0 = 0
@@ -84,8 +86,7 @@ def rules(grid, user, user_toggle):
     for i in range(LARGEUR):
         for j in range(HAUTEUR):
             if grid[i:i+3][j:j+3] == [0, 0, 0, 0] or grid[i:i+3][j:j+3] == [1, 1, 1, 1] or grid[i:i+3][j:j-3] == [0, 0, 0, 0] or grid[i:i+3][j:j-3] == [1, 1, 1, 1]:
-                print('Partie Terminée')
-                break
+                exit_program(grid)
     # Switching to the other user if the first user played.
     if user_toggle == False:
         user_toggle = True
@@ -114,15 +115,24 @@ def display_grid(grid):
     # Display each list of the grid vertically to form a real connect-four
     for i in range(HAUTEUR):
         for j in range(LARGEUR):
-            if j != LARGEUR - 1:
+            if j != HAUTEUR:
                 print(grid[j][i], end=' ')
             else:
                 print(grid[j][i], end='\n')
 
 
+def exit_program(grid):
+    # Exit the program when the game is over using exit() function.
+    display_grid(grid)
+    print('Partie Terminée')
+    print('Exiting the program...')
+    s.exit(0)
+
 ########
 # Main #
 ########
+
+
 def main():
     # Main function where the interpreter start it first.
     grid = grid_create()
