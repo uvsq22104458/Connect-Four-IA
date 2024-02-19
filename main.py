@@ -1,143 +1,107 @@
-###############
-# Importation #
-###############
 import sys as s
-############
-# Constant #
-############
-LARGEUR = 7
-HAUTEUR = 6
-#############
-# Variables #
-#############
-user_toggle = True
-#############
-# Functions #
-#############
+COLUMNS = 7
+ROWS = 6
+WIN_PATTERN_1 = [1, 1, 1, 1]
+WIN_PATTERN_2 = [2, 2, 2, 2]
+val = {'Space': 0, 'Player 1': 1, 'Player 2': 2}
+colors = ["\033[0m", "\033[0;31m", "\033[1;33m"]
+current_player = val["Player 1"]
 
 
 def grid_create():
-    # Create a grid full of '.'.
+
+    global grid
     grid = []
-    for i in range(LARGEUR):
+    for column in range(COLUMNS):
         grid.append([])
-        for _ in range(HAUTEUR):
-            grid[i].append('.')
+        for _ in range(ROWS):
+            grid[column].append(val["Space"])
     return grid
 
 
-def rules(grid, user, user_toggle):
-    # Rules for adding a pawn, verify if the column if full or if it's a draw.
-    # Check if there is any horizontally, vertically or diagonally match.
-    # Switch to the next user after the first user played.
-    compteur_0 = 0
-    compteur_1 = 0
-    # Add a pawn.
-    for i in range(1, LARGEUR + 1):
-        if grid[user][-i] == '.':
-            if user_toggle == True:
-                grid[user][-i] = 0
-                break
-            else:
-                grid[user][-i] = 1
-                break
-    # Check if the colunm is full.
-        elif grid[user][0] != '.':
+def display_grid():
+
+    for row in range(ROWS):
+        for column in range(COLUMNS):
             print(
-                'La colonne est complète, veuillez réessayer.')
-            input_user(grid, user_toggle)
-    # Check for a draw
-    for i in range(LARGEUR):
-        if grid[i][0] == 0 or grid[i][0] == 1:
-            compteur_0 += 1
-        if compteur_0 == LARGEUR:
-            print('Le puissance 4 est complet, la partie est nulle.')
-            compteur_0 = 0
-            exit_program(grid)
-    # Check if there is a match vertically.
-    for i in range(LARGEUR):
-        for j in range(HAUTEUR):
-            if grid[i][j] == 0:
-                compteur_0 += 1
-            elif grid[i][j] == 1:
-                compteur_1 += 1
-            elif compteur_1 == 4 or compteur_0 == 4:
-                compteur_1 = 0
-                compteur_0 = 0
-                exit_program(grid)
-            else:
-                compteur_1 = 0
-                compteur_0 = 0
-    # Check if there is a match horizontally.
-    for i in range(HAUTEUR):
-        for j in range(LARGEUR):
-            if grid[j][i] == 0:
-                compteur_0 += 1
-            elif grid[j][i] == 1:
-                compteur_1 += 1
-            elif compteur_1 == 4 or compteur_0 == 4:
-                compteur_1 = 0
-                compteur_0 = 0
-                exit_program(grid)
-            else:
-                compteur_1 = 0
-                compteur_0 = 0
-    # Check if there is a match diagonally.
-    for i in range(LARGEUR):
-        for j in range(HAUTEUR):
-            if grid[i:i+3][j:j+3] == [0, 0, 0, 0] or grid[i:i+3][j:j+3] == [1, 1, 1, 1] or grid[i:i+3][j:j-3] == [0, 0, 0, 0] or grid[i:i+3][j:j-3] == [1, 1, 1, 1]:
-                exit_program(grid)
-    # Switching to the other user if the first user played.
-    if user_toggle == False:
-        user_toggle = True
-        input_user(grid, user_toggle)
-    if user_toggle == True:
-        user_toggle = False
-        input_user(grid, user_toggle)
+                f"{colors[grid[column][row]]}.{colors[val['Space']]}", end="  ")
+        print(end='\n')
 
 
-def input_user(grid, user_toggle):
-    # Check if the turn is for user_0 or user_1.
-    # user_0 start first.
-    if user_toggle == True:
-        display_grid(grid)
-        user_0 = int(
-            input('User_0 le n° de la colonne souhaitée pour jouer : ')) - 1
-        rules(grid, user_0, user_toggle)
-    if user_toggle == False:
-        display_grid(grid)
-        user_1 = int(
-            input('User_1 le n° de la colonne souhaitée pour jouer : ')) - 1
-        rules(grid, user_1, user_toggle)
+def input_player():
+
+    display_grid()
+    try:
+        column = int(
+            input(f"{colors[current_player]}Player {current_player}{colors[val['Space']]}, choose a column to play (1-{COLUMNS}) :")) - 1
+        if 0 <= column < COLUMNS:
+            add_pawn(column)
+        else:
+            raise ValueError
+    except ValueError:
+        print(f'Error of value: try again.')
+        input_player()
 
 
-def display_grid(grid):
-    # Display each list of the grid vertically to form a real connect-four
-    for i in range(HAUTEUR):
-        for j in range(LARGEUR):
-            if j != HAUTEUR:
-                print(grid[j][i], end=' ')
-            else:
-                print(grid[j][i], end='\n')
+def add_pawn(column):
+
+    for elem in range(ROWS-1, -1, -1):
+        if grid[column][elem] == val["Space"]:
+            grid[column][elem] = current_player
+            x, y = column, elem
+            break
+        elif grid[column][0] != val["Space"]:
+            print("La colonne est complète, veuillez réessayer.")
+            input_player(grid, current_player)
+    vertical_pattern = [grid[x][i] for i in range(ROWS)]
+    alignments(vertical_pattern)
+    horizontal_pattern = [grid[i][y] for i in range(COLUMNS)]
+    alignments(horizontal_pattern)
+    # diagonal_UP_pattern = [grid[x+i][y+i] for i in range()]
+    # diagonal_DOWN_pattern = [grid[x-i][y-i] for i in range()]
+    # alignments(diagonal_UP_pattern)
+    # alignments(diagonal_DOWN_pattern)
+    draw()
+    toggle_player()
 
 
-def exit_program(grid):
-    # Exit the program when the game is over using exit() function.
-    display_grid(grid)
-    print('Partie Terminée')
-    print('Exiting the program...')
+def alignments(pattern):
+    for elem in range(len(pattern)):
+        if pattern[elem:elem+len(WIN_PATTERN_1)] == WIN_PATTERN_1 or pattern[elem:elem+len(WIN_PATTERN_2)] == WIN_PATTERN_2:
+            exit_program()
+
+
+def draw():
+
+    first_row = [column[0] for column in grid]
+    if val["Space"] not in first_row:
+        print("Le puissance 4 est complet, la partie est nulle.")
+        exit_program()
+
+
+def toggle_player():
+
+    global current_player
+    if current_player == val["Player 1"]:
+        current_player = val["Player 2"]
+        input_player()
+    else:
+        current_player = val["Player 1"]
+        input_player()
+
+
+def exit_program():
+
+    display_grid()
+    print(f"Player {current_player} has won.\nExiting the program...")
     s.exit(0)
-
-########
-# Main #
-########
 
 
 def main():
-    # Main function where the interpreter start it first.
-    grid = grid_create()
-    input_user(grid, user_toggle)
+
+    grid_create()
+    input_player()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
