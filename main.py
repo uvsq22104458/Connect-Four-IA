@@ -3,19 +3,19 @@ COLUMNS = 7
 ROWS = 6
 WIN_PATTERN_1 = [1, 1, 1, 1]
 WIN_PATTERN_2 = [2, 2, 2, 2]
-val = {'Space': 0, 'Player 1': 1, 'Player 2': 2}
+space = 0
 colors = ["\033[0m", "\033[0;31m", "\033[1;33m"]
-current_player = val["Player 1"]
+current_player = 1
 
 
-def grid_create():
+def create_grid():
 
     global grid
     grid = []
     for column in range(COLUMNS):
         grid.append([])
         for _ in range(ROWS):
-            grid[column].append(val["Space"])
+            grid[column].append(space)
     return grid
 
 
@@ -24,7 +24,7 @@ def display_grid():
     for row in range(ROWS):
         for column in range(COLUMNS):
             print(
-                f"{colors[grid[column][row]]}.{colors[val['Space']]}", end="  ")
+                f"{colors[grid[column][row]]}.{colors[space]}", end="  ")
         print(end='\n')
 
 
@@ -33,7 +33,7 @@ def input_player():
     display_grid()
     try:
         column = int(
-            input(f"{colors[current_player]}Player {current_player}{colors[val['Space']]}, choose a column to play (1-{COLUMNS}) :")) - 1
+            input(f"{colors[current_player]}Player {current_player}{colors[space]}, choose a column to play (1-{COLUMNS}) :")) - 1
         if 0 <= column < COLUMNS:
             add_pawn(column)
         else:
@@ -46,21 +46,17 @@ def input_player():
 def add_pawn(column):
 
     for elem in range(ROWS-1, -1, -1):
-        if grid[column][elem] == val["Space"]:
+        if grid[column][elem] == space:
             grid[column][elem] = current_player
             x, y = column, elem
             break
-        elif grid[column][0] != val["Space"]:
+        elif grid[column][0] != space:
             print("La colonne est complète, veuillez réessayer.")
             input_player(grid, current_player)
-    vertical_pattern = [grid[x][i] for i in range(ROWS)]
+    vertical_pattern = [grid[x][row] for row in range(ROWS)]
     alignments(vertical_pattern)
-    horizontal_pattern = [grid[i][y] for i in range(COLUMNS)]
+    horizontal_pattern = [grid[column][y] for column in range(COLUMNS)]
     alignments(horizontal_pattern)
-    # diagonal_UP_pattern = [grid[x+i][y+i] for i in range()]
-    # diagonal_DOWN_pattern = [grid[x-i][y-i] for i in range()]
-    # alignments(diagonal_UP_pattern)
-    # alignments(diagonal_DOWN_pattern)
     draw()
     toggle_player()
 
@@ -74,7 +70,7 @@ def alignments(pattern):
 def draw():
 
     first_row = [column[0] for column in grid]
-    if val["Space"] not in first_row:
+    if space not in first_row:
         print("Le puissance 4 est complet, la partie est nulle.")
         exit_program()
 
@@ -82,12 +78,8 @@ def draw():
 def toggle_player():
 
     global current_player
-    if current_player == val["Player 1"]:
-        current_player = val["Player 2"]
-        input_player()
-    else:
-        current_player = val["Player 1"]
-        input_player()
+    current_player = (WIN_PATTERN_1[0]+WIN_PATTERN_2[0]) - current_player
+    input_player()
 
 
 def exit_program():
@@ -99,7 +91,7 @@ def exit_program():
 
 def main():
 
-    grid_create()
+    create_grid()
     input_player()
 
 
